@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
 SUBDIRS += \
-        pqc-chat \
+        chat \
         tlsclient-test \
         tlsserver-test

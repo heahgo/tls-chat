@@ -7,16 +7,19 @@
 struct ChatServer : public TlsServer {
 protected:
 	void run(Session* session) override {
+
 		std::puts("connected");
 		char buf[256];
 		while (true) {
 			int res = session->read(buf, 256);
-			if (res <= 0) break;
+            if (res <= 0) break;
 			buf[res] = '\0';
 			std::puts(buf);
-			sessions_.lock();
-            for (TlsSession* session: sessions_)
-				session->write(buf, res);
+            sessions_.lock();
+
+            for (TlsSession* sessionList: sessions_)
+                if (session != sessionList)
+                    sessionList->write(buf, res);
 			sessions_.unlock();
 		}
 		std::puts("disconnected");
@@ -47,7 +50,7 @@ int main(int argc, char* argv[]) {
 		return -1;
     }
     cs.pemFileName_ = "/home/user/project/git/pqc-app/src/crt/rootCA.pem";
-            //명시안하면
+
     if (!cs.start(param.port_)) {
 		std::cerr << cs.error_ << std::endl;
 		return -1;

@@ -53,8 +53,9 @@ int main(int argc, char* argv[]) {
 	while (true) {
 		std::string msg;
 		std::getline(std::cin, msg);
-		int writeLen = tc.write(msg.data(), msg.size());
-		if (writeLen == -1) break;
+        if (msg == "q") break;
+        int writeLen = tc.write(msg.data(), msg.size());
+        if (writeLen == -1 ) break;
 	}
 	tc.close();
 }

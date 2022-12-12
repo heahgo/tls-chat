@@ -1,8 +1,5 @@
 TEMPLATE = subdirs
 SUBDIRS += \
-        tcpclient-test \
-        tcpserver-test \
+        pqc-chat \
         tlsclient-test \
-        tlsserver-test \
-	vpnclient-test \
-	vpnserver-test
+        tlsserver-test

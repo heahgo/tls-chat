@@ -4,6 +4,10 @@ RThread::RThread()
 {
 
 }
+
+RThread::~RThread() {
+    tc->close();
+}
 void RThread::run() {
     while (true) {
         char buf[256];
@@ -12,4 +16,8 @@ void RThread::run() {
         buf[res] = '\0';
         emit readMsg(buf);
     }
+}
+void RThread::stop() {
+    this->quit();
+    this->wait(1000);
 }

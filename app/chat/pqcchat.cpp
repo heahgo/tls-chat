@@ -7,7 +7,7 @@ PqcChat::PqcChat(QWidget *parent)
 {
     ui->setupUi(this);
     rthread = new RThread();
-    connect(rthread, SIGNAL(readMsg(char*)), this, SLOT(showMsg(char*)));
+    connect(rthread, SIGNAL(readMsg(QString)), this, SLOT(showMsg(QString)));
     ui->btnClose->setEnabled(false);
     ui->btnSend->setEnabled(false);
 }
@@ -17,10 +17,8 @@ PqcChat::~PqcChat()
     delete ui;
 }
 
-void PqcChat::showMsg(char* msg) {
-
+void PqcChat::showMsg(QString msg) {
     ui->textChat->append(msg);
-
 }
 
 void PqcChat::on_btnConn_clicked() {

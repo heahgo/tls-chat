@@ -24,7 +24,7 @@ private slots:
     void on_btnConn_clicked();
     void on_btnSend_clicked();
     void on_btnClose_clicked();
-    void showMsg(char* msg);
+    void showMsg(QString msg);
 
 private:
     Ui::PqcChat *ui;

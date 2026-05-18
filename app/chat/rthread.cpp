@@ -11,10 +11,9 @@ RThread::~RThread() {
 void RThread::run() {
     while (true) {
         char buf[256];
-        int res = tc->read(buf, 256);
+        int res = tc->read(buf, 255);
         if (res <= 0) break;
-        buf[res] = '\0';
-        emit readMsg(buf);
+        emit readMsg(QString::fromUtf8(buf, res));
     }
 }
 void RThread::stop() {

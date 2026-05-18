@@ -15,6 +15,6 @@ private:
     void run();
     void stop();
 signals:
-    void readMsg(char* msg);
+    void readMsg(QString msg);
 };
 

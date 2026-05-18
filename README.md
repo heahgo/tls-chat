@@ -76,29 +76,18 @@ cmake --build build
 
 ### TLS 테스트 (암호화)
 
-> **주의**: `tlsserver-test.cpp`의 PEM 경로가 하드코딩되어 있습니다.
-> 실행 전에 `app/tlsserver-test/tlsserver-test.cpp` 52번째 줄을 수정하세요.
->
-> ```cpp
-> // 변경 전 (하드코딩된 절대 경로)
-> cs.pemFileName_ = "/home/user/project/git/pqc-app/src/crt/rootCA.pem";
->
-> // 변경 후 (프로젝트 내 인증서 사용)
-> cs.pemFileName_ = "/your/path/to/tls-chat/src/crt/rootCA.pem";
-> ```
-
-터미널 1 — 서버 실행:
+터미널 1 — 서버 실행 (PEM 파일 경로를 인수로 전달):
 ```bash
-./bin/tlsserver-test <port>
+./bin/tlsserver-test <port> <pem>
 # 예시
-./bin/tlsserver-test 8443
+./bin/tlsserver-test 443 ../src/crt/rootCA.pem
 ```
 
 터미널 2, 3, ... — 클라이언트 실행:
 ```bash
 ./bin/tlsclient-test <host> <port>
 # 예시
-./bin/tlsclient-test 127.0.0.1 8443
+./bin/tlsclient-test 127.0.0.1 443
 ```
 
 - 동작은 TCP 테스트와 동일하며 OpenSSL TLS로 암호화됩니다.

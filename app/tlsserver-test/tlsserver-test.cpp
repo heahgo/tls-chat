@@ -28,16 +28,18 @@ protected:
 
 struct Param {
 	int port_;
+	std::string pem_;
 
 	bool parse(int argc, char** argv) {
-		if (argc != 2) return false;
+		if (argc != 3) return false;
 		port_ = std::stoi(argv[1]);
+		pem_ = argv[2];
 		return true;
 	}
 
 	static void usage() {
-        printf("syntax : tlsserver-test <port>\n");
-        printf("sample : tlsserver-test <port>\n");
+        printf("syntax : tlsserver-test <port> <pem>\n");
+        printf("sample : tlsserver-test 443 ../src/crt/rootCA.pem\n");
 	}
 };
 
@@ -49,7 +51,7 @@ int main(int argc, char* argv[]) {
 		Param::usage();
 		return -1;
     }
-    cs.pemFileName_ = "/home/user/project/git/pqc-app/src/crt/rootCA.pem";
+    cs.pemFileName_ = param.pem_;
 
     if (!cs.start(param.port_)) {
 		std::cerr << cs.error_ << std::endl;

@@ -4,15 +4,26 @@
 
 bool TlsServer::start(int port) {
 
-    OpenSSL_add_all_algorithms();  /* load & register all cryptos, etc. */
-    SSL_load_error_strings();   /* load all error messages */
-    const SSL_METHOD *method = TLS_server_method();  /* create new server-method instance */
-    ctx_ = SSL_CTX_new(method);   /* create new context from method */
+    OpenSSL_add_all_algorithms();
+    SSL_load_error_strings();
+    const SSL_METHOD *method = TLS_server_method();
+    ctx_ = SSL_CTX_new(method);
     if ( ctx_ == NULL )
     {
         ERR_print_errors_fp(stderr);
         abort();
     }
+
+    SSL_CTX_set_keylog_callback(ctx_, [](const SSL*, const char* line) {
+        const char* path = getenv("SSLKEYLOGFILE");
+        if (!path) return;
+        FILE* f = fopen(path, "a");
+        if (f) { fprintf(f, "%s\n", line); fclose(f); }
+    });
+    SSL_CTX_set_info_callback(ctx_, [](const SSL* ssl, int where, int) {
+        if (where & (SSL_CB_ACCEPT_LOOP | SSL_CB_ACCEPT_EXIT))
+            printf("[TLS Handshake] %s\n", SSL_state_string_long(ssl));
+    });
 
     if ( SSL_CTX_use_certificate_file(ctx_, pemFileName_.data(), SSL_FILETYPE_PEM) <= 0 )
         {
@@ -106,6 +117,12 @@ void TlsServer::acceptRun() {
              ERR_print_errors_fp(stderr);
              break;
         }
+
+        printf("\n========== TLS Client Connected ==========\n");
+        printf("Protocol    : %s\n", SSL_get_version(ssl));
+        printf("Cipher Suite: %s\n", SSL_CIPHER_get_name(SSL_get_current_cipher(ssl)));
+        printf("==========================================\n\n");
+
         TlsSession* session = new TlsSession(newSock, ssl);
         std::thread* thread = new std::thread(&TlsServer::_run, this, session);
 		thread->detach();

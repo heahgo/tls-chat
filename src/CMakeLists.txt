@@ -15,3 +15,7 @@ add_library(tls_network STATIC
 
 target_include_directories(tls_network PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(tls_network PUBLIC tcp_network OpenSSL::SSL OpenSSL::Crypto)
+
+if(WIN32)
+    target_link_libraries(tcp_network PUBLIC ws2_32)
+endif()

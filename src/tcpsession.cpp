@@ -25,10 +25,10 @@ int TcpSession::write(char* buf, int size) {
 }
 
 bool TcpSession::close() {
-	if (sock_ != 0) {
-		::shutdown(sock_, SHUT_RDWR);
-		::close(sock_);
-		sock_ = 0;
-	}
-	return true;
+    if (sock_ != 0) {
+        sock_shutdown(sock_);
+        sock_close(sock_);
+        sock_ = 0;
+    }
+    return true;
 }

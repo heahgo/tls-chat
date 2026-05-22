@@ -1,7 +1,6 @@
 #include <iostream>
 #include <thread>
 
-#include <netinet/in.h>
 #include "tlsclient.h"
 
 struct Param {

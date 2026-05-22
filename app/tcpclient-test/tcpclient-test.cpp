@@ -2,7 +2,6 @@
 #include <string>
 #include <thread>
 
-#include <netinet/in.h>
 #include "tcpclient.h"
 
 struct Param {

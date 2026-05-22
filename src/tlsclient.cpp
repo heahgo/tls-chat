@@ -26,6 +26,16 @@ bool TlsClient::connect(Ip ip, int port) {
     SSL_CTX_set_keylog_callback(ctx_, keylog_cb);
     SSL_CTX_set_info_callback(ctx_, info_cb);
 
+    // CA 파일이 지정되면 서버 인증서 검증을 활성화한다.
+    // 검증 실패 시 SSL_connect 자체가 실패한다.
+    if (!caFileName_.empty()) {
+        SSL_CTX_set_verify(ctx_, SSL_VERIFY_PEER, nullptr);
+        if (SSL_CTX_load_verify_locations(ctx_, caFileName_.data(), nullptr) != 1) {
+            error_ = "CA 인증서 로드 실패: " + caFileName_;
+            return false;
+        }
+    }
+
     sock_ = tcpClient_.sock_;
     ssl_ = SSL_new(ctx_);
     assert(ssl_ != nullptr);
@@ -43,6 +53,9 @@ bool TlsClient::connect(Ip ip, int port) {
     printf("\n========== TLS Connection Established ==========\n");
     printf("Protocol    : %s\n", SSL_get_version(ssl_));
     printf("Cipher Suite: %s\n", SSL_CIPHER_get_name(SSL_get_current_cipher(ssl_)));
+    long verifyResult = SSL_get_verify_result(ssl_);
+    printf("Verify      : %s\n",
+        verifyResult == X509_V_OK ? "OK" : X509_verify_cert_error_string(verifyResult));
     X509* cert = SSL_get_peer_certificate(ssl_);
     if (cert) {
         char buf[256];
